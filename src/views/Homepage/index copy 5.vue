@@ -1,4 +1,4 @@
-
+<!-- 2023年12月5日20:15:18 -->
 <script setup >
 import { onMounted, ref } from 'vue';
 // 普通手机号
@@ -51,42 +51,39 @@ function startLottery() {
     isLotteryRunning.value = true;
     buttonText.value = '暂停抽奖';
 
+    // 筛选普通号码列表，排除已中奖号码
+    const filteredNumbers = cellphoneNumber.value.filter(
+        number => !winners.value.some(winner => winner.phoneNumber === number)
+    );
+
+    // 更新普通号码列表
+    cellphoneNumber.value = filteredNumbers;
+
+    // 筛选白名单号码列表，排除已中奖号码
+    const filteredWhiteListNumbers = whiteListhoneNumber.value.filter(
+        number => !winners.value.some(winner => winner.phoneNumber === number)
+    );
+
+    // 更新白名单号码列表
+    whiteListhoneNumber.value = filteredWhiteListNumbers;
+
     intervalId = setInterval(() => {
-        // 筛选可用的普通号码和兑换码
-        let availableNumbers = cellphoneNumber.value.filter(
-            number => !winners.value.some(winner => winner.phoneNumber === number)
-        );
-        let availableCodes = exchangeCode.value.filter(
-            code => !winners.value.some(winner => winner.exchangeCode === code)
-        );
-
-        // 筛选可用的白名单号码和兑换码
-        const availableWhiteListNumbers = whiteListhoneNumber.value.filter(
-            number => !winners.value.some(winner => winner.phoneNumber === number)
-        );
-        const availableWhiteListCodes = whiteListexchange.value.filter(
-            code => !winners.value.some(winner => winner.exchangeCode === code)
-        );
-
         let randomIndex;
-        if (Math.random() < 0.5 && availableWhiteListNumbers.length > 0 && availableWhiteListCodes.length > 0) {
+        if (Math.random() < 0.5) {
             // 从白名单中随机选择
-            randomIndex = Math.floor(Math.random() * availableWhiteListNumbers.length);
-            selectedPhoneNumber.value = availableWhiteListNumbers[randomIndex];
-            selectedExchangeCode.value = availableWhiteListCodes[randomIndex];
-        } else if (availableNumbers.length > 0 && availableCodes.length > 0) {
-            // 如果不在白名单中，则从普通列表中随机选择
-            randomIndex = Math.floor(Math.random() * availableNumbers.length);
-            selectedPhoneNumber.value = availableNumbers[randomIndex];
-            selectedExchangeCode.value = availableCodes[randomIndex];
+            randomIndex = Math.floor(Math.random() * whiteListhoneNumber.value.length);
+            selectedPhoneNumber.value = whiteListhoneNumber.value[randomIndex];
+            selectedExchangeCode.value = whiteListexchange.value[randomIndex];
         } else {
-            stopLottery(); // 如果所有号码都已中奖，则停止抽奖
-            alert('所有号码都已中奖，请重新抽奖');
+            // 如果不在白名单中，则从普通列表中随机选择
+            randomIndex = Math.floor(Math.random() * cellphoneNumber.value.length);
+            selectedPhoneNumber.value = cellphoneNumber.value[randomIndex];
+            selectedExchangeCode.value = exchangeCode.value[randomIndex];
         }
-        // 只有在抽奖运行中且未抽完白名单时，才从白名单中抽取
         updateHiddenValues();
     }, 100);
 }
+
 // 停止抽奖
 function stopLottery() {
     isLotteryRunning.value = false;
@@ -112,9 +109,6 @@ function stopLottery() {
     }
 }
 // 保存获胜者信息到本地存储
-// 保存获胜者信息到本地存储
-
-
 function saveWinnersToLocalStorage() {
     localStorage.setItem('winners', JSON.stringify(winners.value));
 }
