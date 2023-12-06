@@ -13,6 +13,6 @@ body {
   width: 100%;
   margin: 0;
   padding: 0;
-  /* background: #ccc; */
+  background: #1f1f1f;
 }
 </style>
