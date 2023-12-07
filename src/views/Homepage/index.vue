@@ -90,6 +90,7 @@ function startLottery() {
 function stopLottery() {
     isLotteryRunning.value = false;
     buttonText.value = '开始抽奖';
+
     clearInterval(intervalId);
 
     let randomIndex;
@@ -141,6 +142,7 @@ function stopLottery() {
 
     if (allNumbers.length === winners.value.length) {
         switchToRegularMode();
+        // alert('恭喜您中奖了！'); // 添加中奖提示语
     }
 }
 
@@ -371,85 +373,163 @@ function clearTheLottery() {
     if (confirm('确定清除中奖吗？')) {
         localStorage.removeItem('winners');
         winners.value = [];
+        // 刷新页面
+        location.reload();
     }
 }
 </script>
 
 <template>
     <div class="raffleBoxStyle">
-        <div class="raffleBox" style="color: #fff;">
-            <div class="box1">
-                <h1>
-                    <h1>{{ isLotteryRunning ? hiddenExchangeCode : hiddenExchangeCode }}</h1>
-                </h1>
+        <div class="raffleBox" style="color: #000;">
+            <img src="../../assets/cj.png" alt="">
+            <div class="box33">
+                <div class="box1">
+                    <h1>
+                        <h1>{{ isLotteryRunning ? hiddenExchangeCode : hiddenExchangeCode }}</h1>
+                    </h1>
+                </div>
+                <div class="box2">
+                    <h1>
+                        <h1>{{ isLotteryRunning ? hiddenPhoneNumber : hiddenPhoneNumber }}</h1>
+                    </h1>
+                </div>
             </div>
-            <div class="box2">
-                <h1>
-                    <h1>{{ isLotteryRunning ? hiddenPhoneNumber : hiddenPhoneNumber }}</h1>
-                </h1>
+            <!-- ann -->
+            <div class="box3button">
+                <div class="lotterytow" @click="exportToWinTheLottery">
+                    <img src="../../assets/3.png" alt="">
+                </div>
+                <div class="lotteryoneimg">
+                    <button @click="toggleLottery">
+                        <img v-if="buttonText === '开始抽奖'" src="../../assets/1.png" alt="">
+                        <img v-else="buttonText === '暂停抽奖'" src="../../assets/2.png" alt="">
+                    </button>
+                </div>
+                <div class="lotterytree" @click="clearTheLottery">
+                    <img src="../../assets/4.png" alt="">
+                </div>
             </div>
         </div>
-        <div class="lottery">
-            <button @click="toggleLottery">{{ buttonText }}</button>
-        </div>
-        <div class="lottery">
-            <button @click="exportToWinTheLottery">导出中奖</button>
-        </div>
-        <div class="lottery">
-            <button @click="clearTheLottery">清除中奖</button>
-        </div>
+
+
     </div>
 </template>
 
 <style lang="less" scoped>
 .raffleBoxStyle {
     width: 100%;
-    height: 100%;
+    height: 100vh;
+    background: url('../../assets/bg1.jpg');
+    background-size: contain;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
 
     .raffleBox {
+        position: relative;
         width: 750px;
         height: 100px;
         display: flex;
         justify-content: space-evenly;
         align-items: center;
 
-        .box1 {
-            border: 1px solid #000;
-            width: 300px;
-            height: 100px;
+
+        .box33 {
+            width: 441px;
+            height: 140px;
             display: flex;
-            justify-content: space-evenly;
+            justify-content: space-around;
             align-items: center;
-            font-size: 30px;
+            position: absolute;
+            top: -200px;
+            right: 140px;
+
+            .box1 {
+                // border: 1px solid #000;
+                // width: 300px;
+                height: 100px;
+                display: flex;
+                justify-content: space-evenly;
+                align-items: center;
+                font-size: 45px;
+                color: #fdd441;
+                -webkit-text-stroke: 1px #fcc037;
+            }
+
+            .box2 {
+                // border: 1px solid #000;
+                // width: 300px;
+                height: 100px;
+                display: flex;
+                justify-content: space-evenly;
+                align-items: center;
+                font-size: 45px;
+                //文字发光
+                color: #fdd441;
+                -webkit-text-stroke: 1px #fcc037;
+
+            }
         }
 
-        .box2 {
-            border: 1px solid #000;
-            width: 300px;
+        .box3button {
+            width: 555px;
+            top: 293px;
+            left: 80px;
             height: 100px;
+            position: absolute;
             display: flex;
-            justify-content: space-evenly;
+            justify-content: space-around;
             align-items: center;
-            font-size: 30px;
+
+            .lotteryoneimg {
+                width: 100px;
+                height: 30px;
+
+                img {
+                    width: 150px;
+                }
+
+                button {
+                    width: 150px;
+                    height: 50px;
+                    font-size: 20px;
+                    // 清除默认样式
+                    background: none;
+                    border: none;
+                    outline: none;
+                    cursor: pointer;
+                }
+            }
+
+            .lotterytow {
+                width: 100px;
+                height: 30px;
+                cursor: pointer;
+
+                img {
+                    width: 150px;
+                }
+            }
+
+            .lotterytree {
+                width: 100px;
+                height: 30px;
+                cursor: pointer;
+
+                img {
+                    width: 150px;
+                }
+            }
         }
+
 
 
     }
 
-    .lottery {
-        width: 100px;
-        height: 30px;
 
-        button {
-            width: 150px;
-            height: 50px;
-            font-size: 20px;
-        }
 
-    }
+
 }
 </style>
